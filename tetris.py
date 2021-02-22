@@ -1,5 +1,6 @@
 import os
 import time
+import numpy as np
 
 class GameGrid:
 
@@ -10,13 +11,7 @@ class GameGrid:
 
     def generateGameGrid(self):
         '''Creates the empty tetris grid based on objects width and height'''
-        grid =	 []
-        for row in range(self.height):
-            grid.append([])
-            for column in range(self.width):
-                grid[row].append(0)
-        self.grid = grid
-
+        self.grid = np.zeros((self.height,self.width))
 
     def printGameGrid(self):
         '''Prints the game grid to output'''
