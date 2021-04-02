@@ -1,8 +1,10 @@
 import curses
 
+
 def init():
     global stdscr
     stdscr = curses.initscr()
+
 
 def config():
     stdscr.clear()
