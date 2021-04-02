@@ -23,7 +23,7 @@ def gameLoop():
             if key in (b"q", b"Q"):
                 execution_flag = False
 
-        myCurses.stdscr.addstr(str(t) + "\n----------\n")
+        myCurses.stdscr.addstr(25,0,(str(t) + "\n----------\n"))
         myCurses.stdscr.addstr(str(key))
         curses.flushinp()
         t += 1

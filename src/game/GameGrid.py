@@ -1,3 +1,5 @@
+import curses
+
 import myCurses
 import numpy as np
 
@@ -9,7 +11,7 @@ class GameGrid:
         self.width = 10
         self.height = 24
         self.grid = 0
-        self.sprite_list = []
+        self.sprite = None
 
     def generateGameGrid(self):
         """Creates the empty tetris grid based on objects width and height"""
@@ -30,7 +32,7 @@ class GameGrid:
     def printCell(self, cellValue):
         """Prints cell based on time"""
         if cellValue == 0:
-            myCurses.stdscr.addstr("0")
+            myCurses.stdscr.addstr(" ",curses.color_pair(1))
         else:
             myCurses.stdscr.addstr("1")
 
@@ -39,8 +41,15 @@ class GameGrid:
         myCurses.stdscr.addstr("\n")
 
     def draw_sprite(self):
-        sprite = GameSprite.getTetrisSprites()
-        x = 5
-        y = 5
-        (sprite_height, sprite_width) = sprite.shape
-        self.grid[x : x + sprite_height, y : y + sprite_width] = sprite
+        self.sprite = GameSprite.Sprite()
+        self.sprite.set_sprite()
+        self.sprite.x = 5
+        self.sprite.y= 5
+        (sprite_height, sprite_width) = self.sprite.matrix.shape
+        for i in range(sprite_height):
+            for j in range(sprite_width):
+                pixel = self.sprite.matrix[i][j]
+                if pixel == 1:
+                    x = self.sprite.x + j
+                    y = self.sprite.y + i
+                    myCurses.stdscr.addstr(y,x," ",curses.color_pair(2))
