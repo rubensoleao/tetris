@@ -1,19 +1,37 @@
 import os
 import sys
 import time
+from threading import Thread
 
 import myCurses
+import curses
 from game.GameGrid import GameGrid
 
 
 def gameLoop():
     """Main game loop. Executes the game logic and then updates the visuals"""
     # FPS = 8
-    while True:
+    t = 1
+    execution_flag = True
+
+    while execution_flag:
         # Executing game loop once every second
         myCurses.stdscr.clear()
         printFrame()
-        time.sleep(1)
+
+        key = myCurses.stdscr.getch()
+        if key > -1:
+            key = curses.keyname(key)
+            if key in (b"q", b"Q"):
+                execution_flag = False
+
+        myCurses.stdscr.addstr(str(t) + "\n----------\n")
+        myCurses.stdscr.addstr(str(key))
+        curses.flushinp()
+        t += 1
+
+        myCurses.stdscr.refresh()
+        time.sleep(0.1)
 
 
 def printFrame():
@@ -24,18 +42,11 @@ def printFrame():
     game_grid.draw_sprite()
 
 
-#
-# Main
-#
 myCurses.init()
+myCurses.config()
 
 game_grid = GameGrid()
 game_grid.generateGameGrid()
-
-# stdcr MUST BE GLOBAL
-
-myCurses.config()
-myCurses.deconfig()
 
 # Initialize game grid
 try:
@@ -47,6 +58,11 @@ except Exception as e:
     _ = input()
 
     myCurses.kill()
+    myCurses.stdscr = None
 
     print("Unexpected error:", e)
     raise
+
+if myCurses.stdscr != None:
+    myCurses.deconfig()
+    myCurses.kill()

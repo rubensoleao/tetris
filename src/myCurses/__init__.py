@@ -10,6 +10,7 @@ def config():
     stdscr.clear()
     curses.noecho()
     curses.cbreak()
+    stdscr.nodelay(True)
     stdscr.keypad(True)
 
 

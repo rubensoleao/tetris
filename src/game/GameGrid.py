@@ -26,7 +26,6 @@ class GameGrid:
                 self.printCell(self.grid[row][column])
                 # myCurses.stdscr.addstr("0",row,column)
             self.skipGridLine()
-        myCurses.stdscr.refresh()
 
     def printCell(self, cellValue):
         """Prints cell based on time"""
