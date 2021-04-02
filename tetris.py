@@ -1,11 +1,14 @@
 import os
 import time
 import numpy as np
-
+import sys
+import curses
 #
 # GRID
 #
 
+
+event=0
 class GameGrid:
 
     def __init__(self):
@@ -28,19 +31,21 @@ class GameGrid:
         for row in range(self.height):
             for column in range(self.width):
                 self.printCell(self.grid[row][column])
+                # stdscr.addstr("0",row,column)
             self.skipGridLine()
+        stdscr.refresh()
 
 
     def printCell(self, cellValue):
         '''Prints cell based on time'''
         if cellValue==0:
-            print('0', end='')
+            stdscr.addstr("0")
         else:
-            print('1', end='')
+            stdscr.addstr("1")
     
     def skipGridLine(self):
         '''Skips one grid line down'''
-        print()
+        stdscr.addstr("\n")
 
 
     def draw_sprite(self):
@@ -106,30 +111,63 @@ def getTetrisSprites():
 def gameLoop():
     '''Main game loop. Executes the game logic and then updates the visuals'''
     # FPS = 8
-      
     while True:
-        #Executing game loop once every second
-
+        # Executing game loop once every second
+        stdscr.clear()
         printFrame()
-
         time.sleep(1)
-
 
 def printFrame():
     #clearFrame()
-    os.system('cls' if os.name == 'nt' else 'clear')
-    
+
     #printFrame()
     game_grid.outputGameGrid()
     game_grid.draw_sprite()
 
 #
+#   curses
+#
+
+
+def init_curses():
+    return curses.initscr()
+
+def config_curses():
+    stdscr.clear()
+    curses.noecho()
+    curses.cbreak()
+    stdscr.keypad(True)
+
+def deconfig_curses():
+    curses.nocbreak()
+    stdscr.keypad(False)
+    curses.echo()
+
+def kill_curses():
+    curses.endwin()
+
+#
 # Main
 #
 
-#Initialize game grid
 game_grid = GameGrid()
 game_grid.generateGameGrid()
 
+#stdcr MUST BE GLOBAL
+stdscr = init_curses()
+config_curses()
+deconfig_curses()
 
-gameLoop()
+#Initialize game grid
+try:
+    gameLoop()
+except Exception as e:
+    deconfig_curses()
+
+    print("AN ERROR HAS OCCURRED PRESS ANY KEY TO CONTINUE")
+    _ =input()
+
+    kill_curses()
+    
+    print("Unexpected error:", e)
+    raise
