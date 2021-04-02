@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def Sprite():
     def __init__(self):
         self.matrix = np.array()
@@ -15,7 +14,7 @@ def getTetrisSprites():
     """
 
     piece_sprite = [1, 2, 3, 4, 5, 6, 7]
-    piece_sprite[0] = np.array([[0, 1, 0], [1, 1, 1]])  # xxx
+    piece_sprite[0] = np.array([[0, 1, 0], [1, 1, 1]])
 
     piece_sprite[1] = np.array([[1, 1, 0], [0, 1, 1]])
 

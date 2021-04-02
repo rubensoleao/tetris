@@ -1,10 +1,8 @@
-import os
-import sys
+import curses
+
 import time
-from threading import Thread
 
 import myCurses
-import curses
 from game.GameGrid import GameGrid
 
 
