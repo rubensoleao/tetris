@@ -40,11 +40,14 @@ class GameGrid:
         """Skips one grid line down"""
         myCurses.stdscr.addstr("\n")
 
-    def draw_sprite(self):
+
+    def add_sprite(self, x=3, y=0):
         self.sprite = GameSprite.Sprite()
         self.sprite.set_sprite()
-        self.sprite.x = 5
-        self.sprite.y= 5
+        self.sprite.x = x
+        self.sprite.y= y
+
+    def draw_sprite(self):
         (sprite_height, sprite_width) = self.sprite.matrix.shape
         for i in range(sprite_height):
             for j in range(sprite_width):
@@ -53,3 +56,21 @@ class GameGrid:
                     x = self.sprite.x + j
                     y = self.sprite.y + i
                     myCurses.stdscr.addstr(y,x," ",curses.color_pair(2))
+
+    def move_sprite(self, direction):
+        if direction == 'left':
+            change = -1 
+            self.sprite.x -= 1
+        elif direction == 'right':
+            change = 1
+            self.sprite.x += 1
+
+        # Checks for colisions
+        try:
+            x =self.sprite.x
+            y = self.sprite.y
+            (sprite_height, sprite_width) = self.sprite.matrix.shape
+            _ =  self.grid[y:y+sprite_height,x:x+sprite_width] + self.sprite.matrix 
+        except Exception as e:
+            self.sprite.x += (change*-1)
+
