@@ -32,7 +32,7 @@ class GameGrid:
     def printCell(self, cellValue):
         """Prints cell based on time"""
         if cellValue == 0:
-            myCurses.stdscr.addstr(" ",curses.color_pair(1))
+            myCurses.stdscr.addstr(" ", curses.color_pair(1))
         else:
             myCurses.stdscr.addstr("1")
 
@@ -40,12 +40,11 @@ class GameGrid:
         """Skips one grid line down"""
         myCurses.stdscr.addstr("\n")
 
-
     def add_sprite(self, x=3, y=0):
         self.sprite = GameSprite.Sprite()
         self.sprite.set_sprite()
         self.sprite.x = x
-        self.sprite.y= y
+        self.sprite.y = y
 
     def draw_sprite(self):
         (sprite_height, sprite_width) = self.sprite.matrix.shape
@@ -55,22 +54,46 @@ class GameGrid:
                 if pixel == 1:
                     x = self.sprite.x + j
                     y = self.sprite.y + i
-                    myCurses.stdscr.addstr(y,x," ",curses.color_pair(2))
+                    myCurses.stdscr.addstr(y, x, " ", curses.color_pair(2))
 
     def move_sprite(self, direction):
-        if direction == 'left':
-            change = -1 
+        # Should move sprite moving inside sprite class
+        if direction == "left":
+            change = -1
             self.sprite.x -= 1
-        elif direction == 'right':
+        elif direction == "right":
             change = 1
             self.sprite.x += 1
 
-        # Checks for colisions
-        try:
-            x =self.sprite.x
+        if self.sprite_collided():
+            self.sprite.x += change * -1
+
+    def gravity(self):
+        self.sprite.y = self.sprite.y + 1
+        if self.sprite_collided():
+            self.sprite.y -= 1
+            x = self.sprite.x
             y = self.sprite.y
             (sprite_height, sprite_width) = self.sprite.matrix.shape
-            _ =  self.grid[y:y+sprite_height,x:x+sprite_width] + self.sprite.matrix 
-        except Exception as e:
-            self.sprite.x += (change*-1)
 
+            self.grid[y : y + sprite_height, x : x + sprite_width] += self.sprite.matrix
+
+            # Delete and create new Sprite
+            del self.sprite
+            self.sprite = GameSprite.Sprite()
+            self.sprite.set_sprite()
+
+    def sprite_collided(self):
+        try:
+            x = self.sprite.x
+            y = self.sprite.y
+            (sprite_height, sprite_width) = self.sprite.matrix.shape
+            aux_matrix = self.grid[y : y + sprite_height, x : x + sprite_width]
+            if aux_matrix.shape != self.sprite.matrix.shape:
+                return True
+            summed_matrix = aux_matrix + self.sprite.matrix
+            if summed_matrix.max() > 1:
+                raise Exception
+            return False  # No colision
+        except Exception:
+            return True

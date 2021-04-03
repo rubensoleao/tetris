@@ -19,9 +19,11 @@ def config():
 
 
 def deconfig():
-    curses.nocbreak()
+    curses.echo() # removes noecho
+    curses.nocbreak() # removes Cbreak
+    #nocolor
     stdscr.keypad(False)
-    curses.echo()
+    stdscr.nodelay(False)
 
 
 def kill():
