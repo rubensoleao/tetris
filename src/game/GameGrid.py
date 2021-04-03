@@ -65,12 +65,38 @@ class GameGrid:
             change = 1
             self.sprite.x += 1
 
-        if self.sprite_collided():
+        if self.sprite_collided(self.sprite):
             self.sprite.x += change * -1
+
+    def rotate_sprite(self, direction):
+        positionedSprite = GameSprite.Sprite()
+        positionedSprite.matrix = self.sprite.matrix
+        positionedSprite.x = self.sprite.x
+        positionedSprite.y = self.sprite.y
+        if direction == "couterclock":
+            positionedSprite.matrix = np.rot90(positionedSprite.matrix, k=3)
+        elif direction == "clockwise":
+            positionedSprite.matrix = np.rot90(positionedSprite.matrix, k=1)
+        else:
+            return
+        (_, sprite_width) = positionedSprite.matrix.shape
+
+        positionOverflow = positionedSprite.x + sprite_width - self.width
+        if positionOverflow> 0:
+            new_sprite_x  = positionedSprite.x - positionOverflow
+
+            if new_sprite_x < 0:
+                return
+            else:
+                positionedSprite.x = new_sprite_x
+
+        if self.sprite_collided(positionedSprite) == False:
+            self.sprite.matrix = positionedSprite.matrix
+            self.sprite.x = positionedSprite.x
 
     def gravity(self):
         self.sprite.y = self.sprite.y + 1
-        if self.sprite_collided():
+        if self.sprite_collided(self.sprite):
             self.sprite.y -= 1
             x = self.sprite.x
             y = self.sprite.y
@@ -83,17 +109,17 @@ class GameGrid:
             self.sprite = GameSprite.Sprite()
             self.sprite.set_sprite()
 
-    def sprite_collided(self):
+    def sprite_collided(self, sprite):
         try:
-            x = self.sprite.x
-            y = self.sprite.y
-            (sprite_height, sprite_width) = self.sprite.matrix.shape
+            x = sprite.x
+            y = sprite.y
+            (sprite_height, sprite_width) = sprite.matrix.shape
             aux_matrix = self.grid[y : y + sprite_height, x : x + sprite_width]
-            if aux_matrix.shape != self.sprite.matrix.shape:
+            if aux_matrix.shape != sprite.matrix.shape:
                 return True
-            summed_matrix = aux_matrix + self.sprite.matrix
+            summed_matrix = aux_matrix + sprite.matrix
             if summed_matrix.max() > 1:
-                raise Exception
+                return True
             return False  # No colision
         except Exception:
             return True

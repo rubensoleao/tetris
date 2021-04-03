@@ -52,6 +52,10 @@ def handle_input():
         game_grid.move_sprite('left')
     elif key == b"KEY_RIGHT":
         game_grid.move_sprite('right')
+    elif key == b"KEY_UP":
+        game_grid.rotate_sprite('couterclock')
+    elif key == b"KEY_DOWN":
+        game_grid.rotate_sprite('clockwise')
     
     myCurses.stdscr.addstr(str(key))
     curses.flushinp()
@@ -73,7 +77,7 @@ try:
 except Exception as e:
     myCurses.deconfig()
 
-    print("AN ERROR HAS OCCURRED PRESS ANY KEY TO CONTINUE")
+    print("AN ERROR HAS OCCURRED PRESS ENTER TO CONTINUE")
     _ = input()
 
     myCurses.kill()
