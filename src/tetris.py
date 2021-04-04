@@ -53,7 +53,7 @@ def handle_input():
     elif key == b"KEY_UP":
         game_grid.rotate_sprite('couterclock')
     elif key == b"KEY_DOWN":
-        game_grid.rotate_sprite('clockwise')
+        game_grid.full_down()
     
     curses.flushinp()
 

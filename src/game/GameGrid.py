@@ -98,17 +98,21 @@ class GameGrid:
         self.sprite.y = self.sprite.y + 1
         if self.sprite_collided(self.sprite):
             self.sprite.y -= 1
-            x = self.sprite.x
-            y = self.sprite.y
-            (sprite_height, sprite_width) = self.sprite.matrix.shape
+            self.consolidade_sprite()
+            self.deplete_create_sprite()
+    
+    def consolidade_sprite(self):
+        x = self.sprite.x
+        y = self.sprite.y
+        (sprite_height, sprite_width) = self.sprite.matrix.shape
 
-            self.grid[y : y + sprite_height, x : x + sprite_width] += self.sprite.matrix
+        self.grid[y : y + sprite_height, x : x + sprite_width] += self.sprite.matrix
 
-            # Delete and create new Sprite
-            del self.sprite
-            self.sprite = GameSprite.Sprite()
-            self.sprite.set_sprite()
-            self.line_finish()
+    def deplete_create_sprite(self):
+        del self.sprite
+        self.sprite = GameSprite.Sprite()
+        self.sprite.set_sprite()
+        self.line_finish()
 
     def sprite_collided(self, sprite):
         try:
@@ -137,3 +141,12 @@ class GameGrid:
             else:
                 supMatrix = np.append(empty_line, supMatrix, axis=0)
         self.grid = supMatrix
+
+    def full_down(self):
+        while True:
+            self.sprite.y +=1
+            if (self.sprite_collided(self.sprite)):
+                break
+        self.sprite.y-=1
+        self.consolidade_sprite()
+        self.deplete_create_sprite()
