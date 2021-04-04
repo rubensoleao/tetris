@@ -27,14 +27,15 @@ class GameGrid:
             for column in range(self.width):
                 self.printCell(self.grid[row][column])
                 # myCurses.stdscr.addstr("0",row,column)
-            self.skipGridLine()
+            if row != 23:
+                self.skipGridLine()
 
     def printCell(self, cellValue):
         """Prints cell based on time"""
         if cellValue == 0:
-            myCurses.stdscr.addstr(" ", curses.color_pair(1))
+            myCurses.stdscr.addstr("  ", curses.color_pair(1))
         else:
-            myCurses.stdscr.addstr("1")
+            myCurses.stdscr.addstr("  ", curses.color_pair(2))
 
     def skipGridLine(self):
         """Skips one grid line down"""
@@ -54,7 +55,7 @@ class GameGrid:
                 if pixel == 1:
                     x = self.sprite.x + j
                     y = self.sprite.y + i
-                    myCurses.stdscr.addstr(y, x, " ", curses.color_pair(2))
+                    myCurses.stdscr.addstr(y, x*2, "  ", curses.color_pair(2))
 
     def move_sprite(self, direction):
         # Should move sprite moving inside sprite class

@@ -19,8 +19,6 @@ def gameLoop():
         # Executing game loop once every second
         myCurses.stdscr.clear()
         printFrame()
-
-        myCurses.stdscr.addstr(25,0,(str(t) + "\n----------\n"))
         handle_input()
 
         t += 1
@@ -57,7 +55,6 @@ def handle_input():
     elif key == b"KEY_DOWN":
         game_grid.rotate_sprite('clockwise')
     
-    myCurses.stdscr.addstr(str(key))
     curses.flushinp()
 
 
