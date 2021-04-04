@@ -26,7 +26,6 @@ class GameGrid:
         for row in range(self.height):
             for column in range(self.width):
                 self.printCell(self.grid[row][column])
-                # myCurses.stdscr.addstr("0",row,column)
             if row != 23:
                 self.skipGridLine()
 
@@ -35,7 +34,7 @@ class GameGrid:
         if cellValue == 0:
             myCurses.stdscr.addstr("  ", curses.color_pair(1))
         else:
-            myCurses.stdscr.addstr("  ", curses.color_pair(2))
+            myCurses.stdscr.addstr("  ", curses.color_pair(cellValue + 1))
 
     def skipGridLine(self):
         """Skips one grid line down"""
@@ -52,10 +51,10 @@ class GameGrid:
         for i in range(sprite_height):
             for j in range(sprite_width):
                 pixel = self.sprite.matrix[i][j]
-                if pixel == 1:
+                if pixel > 0:
                     x = self.sprite.x + j
                     y = self.sprite.y + i
-                    myCurses.stdscr.addstr(y, x*2, "  ", curses.color_pair(2))
+                    myCurses.stdscr.addstr(y, x * 2, "  ", curses.color_pair(pixel + 1))
 
     def move_sprite(self, direction):
         # Should move sprite moving inside sprite class
@@ -83,8 +82,8 @@ class GameGrid:
         (_, sprite_width) = positionedSprite.matrix.shape
 
         positionOverflow = positionedSprite.x + sprite_width - self.width
-        if positionOverflow> 0:
-            new_sprite_x  = positionedSprite.x - positionOverflow
+        if positionOverflow > 0:
+            new_sprite_x = positionedSprite.x - positionOverflow
 
             if new_sprite_x < 0:
                 return
@@ -119,7 +118,9 @@ class GameGrid:
             aux_matrix = self.grid[y : y + sprite_height, x : x + sprite_width]
             if aux_matrix.shape != sprite.matrix.shape:
                 return True
-            summed_matrix = aux_matrix + sprite.matrix
+            summed_matrix = np.where(aux_matrix > 0, 1, 0) + np.where(
+                sprite.matrix > 0, 1, 0
+            )
             if summed_matrix.max() > 1:
                 return True
             return False  # No colision
@@ -127,12 +128,12 @@ class GameGrid:
             return True
 
     def line_finish(self):
-        empty_line = np.zeros((1,self.width),int) 
+        empty_line = np.zeros((1, self.width), int)
         supMatrix = np.empty((0, self.width), int)
         for i in range(self.height):
-            line = self.grid[i,:][None,:]
+            line = self.grid[i, :][None, :]
             if 0 in line:
-                supMatrix = np.append(supMatrix, line, axis = 0)
+                supMatrix = np.append(supMatrix, line, axis=0)
             else:
-                supMatrix = np.append(empty_line,supMatrix, axis = 0)
+                supMatrix = np.append(empty_line, supMatrix, axis=0)
         self.grid = supMatrix
