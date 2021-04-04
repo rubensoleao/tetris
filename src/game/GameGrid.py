@@ -15,7 +15,7 @@ class GameGrid:
 
     def generateGameGrid(self):
         """Creates the empty tetris grid based on objects width and height"""
-        self.grid = np.zeros((self.height, self.width))
+        self.grid = np.zeros((self.height, self.width), int)
 
     def outputGameGrid(self):
         """Prints the game grid to output
@@ -108,6 +108,7 @@ class GameGrid:
             del self.sprite
             self.sprite = GameSprite.Sprite()
             self.sprite.set_sprite()
+            self.line_finish()
 
     def sprite_collided(self, sprite):
         try:
@@ -123,3 +124,14 @@ class GameGrid:
             return False  # No colision
         except Exception:
             return True
+
+    def line_finish(self):
+        empty_line = np.zeros((1,self.width),int) 
+        supMatrix = np.empty((0, self.width), int)
+        for i in range(self.height):
+            line = self.grid[i,:][None,:]
+            if 0 in line:
+                supMatrix = np.append(supMatrix, line, axis = 0)
+            else:
+                supMatrix = np.append(empty_line,supMatrix, axis = 0)
+        self.grid = supMatrix

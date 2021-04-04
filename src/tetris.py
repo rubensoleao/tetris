@@ -34,7 +34,7 @@ def printFrame():
 
     # printFrame()
     game_grid.outputGameGrid()
-    if t%5 == 0:
+    if t%2 == 0:
         game_grid.gravity()
     game_grid.draw_sprite()
 
